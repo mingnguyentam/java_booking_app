@@ -21,21 +21,20 @@ Một hệ thống quản lý đặt phòng toàn diện được xây dựng b�
 
 ### 🛡️ **Bảo mật & Tính toàn vẹn Dữ liệu**
 - **Cơ sở dữ liệu SQLite**: Lưu trữ dữ liệu an toàn, nhẹ nhàng
-- **Prepared Statements**: Ngăn chặn SQL Injection
 - **Xác thực Dữ liệu**: Kiểm tra dữ liệu đầu vào trước khi lưu
 - **Quản lý Kết nối**: Kết nối database singleton được quản lý tốt
-- **Foreign Key Constraints**: Đảm bảo tính toàn vẹn dữ liệu
+- **Khóa ngoại sử dụng**: Đảm bảo tính toàn vẹn dữ liệu
 
 ## 🔒 **Xác thực Dữ Liệu**
-- **Duplicate Prevention**: Không cho phép tên phòng trùng (case-insensitive)
-- **Edit/Delete Protection**: Chỉ phòng trống mới có thể sửa/xóa
+- **Xác thực**: Không cho phép tên phòng trùng (case-insensitive)
+- **Bảo vệ dữ liệu**: Chỉ phòng trống mới có thể sửa/xóa
 
 ## 👥 Thành viên nhóm và phân công công việc
 
 | STT | Họ tên | MSSV | Công việc được giao |
 |-----|--------|------|-------------------|
 | 1 | Nguyễn Minh Tâm | K24DTCN627 | Thiết kế database structure, triển khai DatabaseManager, RoomManager, BookingManager |
-| 2 | Trieu Duc Hoang | K24DTCN598 | Thiết kế GUI Swing, triển khai các Panel, Dialog forms |
+| 2 | Triệu Đức Hòang | K24DTCN598 | Thiết kế GUI Swing, triển khai các Panel, Dialog forms |
 
 ## 🚀 Hướng dẫn Cài đặt
 
