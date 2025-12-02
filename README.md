@@ -34,7 +34,7 @@ Một hệ thống quản lý đặt phòng toàn diện được xây dựng b�
 | STT | Họ tên | MSSV | Công việc được giao |
 |-----|--------|------|-------------------|
 | 1 | Nguyễn Minh Tâm | K24DTCN627 | Thiết kế database structure, triển khai DatabaseManager, RoomManager, BookingManager |
-| 2 | Triệu Đức Hòang | K24DTCN598 | Thiết kế GUI Swing, triển khai các Panel, Dialog forms |
+| 2 | Triệu Đức Hoàng | K24DTCN598 | Thiết kế GUI Swing, triển khai các Panel, Dialog forms |
 
 ## 🚀 Hướng dẫn Cài đặt
 
