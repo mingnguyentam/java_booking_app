@@ -29,7 +29,7 @@ public class BookingManager {
             }
         }
         if (!hasAvailable) {
-            System.out.println("No rooms available at the moment.");
+            System.out.println("No data available");
         }
         System.out.println("====================================");
     }
@@ -72,9 +72,9 @@ public class BookingManager {
 
         String insertBookingSql = "INSERT INTO bookings (room_id, customer_name, check_in_date, check_out_date, number_of_nights, total_price) VALUES (?, ?, ?, ?, ?, ?)";
         String updateRoomSql = "UPDATE rooms SET is_available = 0 WHERE room_id = ?";
+        Connection conn = DatabaseManager.getConnection();
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement bookingStmt = conn.prepareStatement(insertBookingSql, Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement bookingStmt = conn.prepareStatement(insertBookingSql, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement roomStmt = conn.prepareStatement(updateRoomSql)) {
 
             bookingStmt.setInt(1, roomId);
@@ -109,9 +109,9 @@ public class BookingManager {
         System.out.println("\n========== MY BOOKINGS ==========");
         String sql = "SELECT * FROM bookings WHERE customer_name = ?";
         boolean hasBookings = false;
+        Connection conn = DatabaseManager.getConnection();
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, currentCustomerName);
             ResultSet rs = pstmt.executeQuery();
@@ -150,9 +150,9 @@ public class BookingManager {
     public ArrayList<Booking> getBookings() {
         ArrayList<Booking> bookings = new ArrayList<>();
         String sql = "SELECT * FROM bookings";
+        Connection conn = DatabaseManager.getConnection();
 
-        try (Connection conn = DatabaseManager.getConnection();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {

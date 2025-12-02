@@ -13,8 +13,8 @@ public class RoomManager {
     }
 
     private void addSampleRooms() {
-        try (Connection conn = DatabaseManager.getConnection();
-             Statement stmt = conn.createStatement();
+        Connection conn = DatabaseManager.getConnection();
+        try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as count FROM rooms")) {
 
             if (rs.next() && rs.getInt("count") == 0) {
@@ -30,8 +30,8 @@ public class RoomManager {
 
     private void addRoomToDatabase(String name, String type, double price) {
         String sql = "INSERT INTO rooms (room_name, room_type, price_per_night, is_available) VALUES (?, ?, ?, 1)";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        Connection conn = DatabaseManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, name);
             pstmt.setString(2, type);
@@ -45,8 +45,8 @@ public class RoomManager {
 
     public void viewAllRooms() {
         String sql = "SELECT * FROM rooms";
-        try (Connection conn = DatabaseManager.getConnection();
-             Statement stmt = conn.createStatement();
+        Connection conn = DatabaseManager.getConnection();
+        try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             System.out.println("\n========== ALL ROOMS ==========");
@@ -63,7 +63,7 @@ public class RoomManager {
                 System.out.println(room);
             }
             if (!hasRooms) {
-                System.out.println("No rooms available in the system.");
+                System.out.println("No data available");
             }
             System.out.println("===============================");
 
@@ -85,8 +85,8 @@ public class RoomManager {
         scanner.nextLine();
 
         String sql = "INSERT INTO rooms (room_name, room_type, price_per_night, is_available) VALUES (?, ?, ?, 1)";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        Connection conn = DatabaseManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, name);
             pstmt.setString(2, type);
@@ -148,8 +148,8 @@ public class RoomManager {
         }
 
         String sql = "UPDATE rooms SET room_name = ?, room_type = ?, price_per_night = ? WHERE room_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        Connection conn = DatabaseManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, name);
             pstmt.setString(2, type);
@@ -195,8 +195,8 @@ public class RoomManager {
 
         if (confirm.equalsIgnoreCase("yes")) {
             String sql = "DELETE FROM rooms WHERE room_id = ?";
-            try (Connection conn = DatabaseManager.getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            Connection conn = DatabaseManager.getConnection();
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
                 pstmt.setInt(1, roomId);
                 pstmt.executeUpdate();
@@ -212,8 +212,8 @@ public class RoomManager {
 
     public Room findRoomById(int roomId) {
         String sql = "SELECT * FROM rooms WHERE room_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        Connection conn = DatabaseManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, roomId);
             ResultSet rs = pstmt.executeQuery();
@@ -238,8 +238,8 @@ public class RoomManager {
     public ArrayList<Room> getRooms() {
         ArrayList<Room> rooms = new ArrayList<>();
         String sql = "SELECT * FROM rooms";
-        try (Connection conn = DatabaseManager.getConnection();
-             Statement stmt = conn.createStatement();
+        Connection conn = DatabaseManager.getConnection();
+        try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
