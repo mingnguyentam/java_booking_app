@@ -81,12 +81,18 @@ public class BookingPanel extends JPanel {
 
         JButton bookButton = createStyledButton("Book Room", new Color(52, 152, 219));
         JButton refreshButton = createStyledButton("Refresh", new Color(149, 165, 166));
+        JButton sortLowToHighButton = createStyledButton("Price: Low to High", new Color(95, 106, 196));
+        JButton sortHighToLowButton = createStyledButton("Price: High to Low", new Color(142, 68, 173));
 
         bookButton.addActionListener(e -> bookRoom());
         refreshButton.addActionListener(e -> refreshAvailableRooms());
+        sortLowToHighButton.addActionListener(e -> sortAvailableRoomsByPrice(true));
+        sortHighToLowButton.addActionListener(e -> sortAvailableRoomsByPrice(false));
 
         buttonPanel.add(bookButton);
         buttonPanel.add(refreshButton);
+        buttonPanel.add(sortLowToHighButton);
+        buttonPanel.add(sortHighToLowButton);
 
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -169,7 +175,7 @@ public class BookingPanel extends JPanel {
                     room.getRoomId(),
                     room.getRoomName(),
                     room.getRoomType(),
-                    String.format("$%.2f", room.getPricePerNight())
+                    String.format("%.0f VND", room.getPricePerNight())
                 };
                 availableRoomsModel.addRow(row);
             }
@@ -198,7 +204,7 @@ public class BookingPanel extends JPanel {
                         rs.getString("check_in_date"),
                         rs.getString("check_out_date"),
                         rs.getInt("number_of_nights"),
-                        String.format("$%.2f", rs.getDouble("total_price"))
+                        String.format("%.0f VND", rs.getDouble("total_price"))
                     };
                     myBookingsModel.addRow(row);
                 }
@@ -257,7 +263,7 @@ public class BookingPanel extends JPanel {
                 customerLabel.setText("Customer: " + currentCustomerName);
 
                 JOptionPane.showMessageDialog(this,
-                        String.format("Booking confirmed!\n\nRoom: %s\nCustomer: %s\nTotal: $%.2f",
+                        String.format("Booking confirmed!\n\nRoom: %s\nCustomer: %s\nTotal: %.0f VND",
                                 room.getRoomName(), customerName, totalPrice),
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -277,6 +283,36 @@ public class BookingPanel extends JPanel {
             bookingManager.setCurrentCustomerName(currentCustomerName);
             customerLabel.setText("Customer: " + currentCustomerName);
             refreshMyBookings();
+        }
+    }
+
+    private void sortAvailableRoomsByPrice(boolean lowToHigh) {
+        ArrayList<Room> rooms = roomManager.getRooms();
+        ArrayList<Room> availableRooms = new ArrayList<>();
+
+        for (Room room : rooms) {
+            if (room.isAvailable()) {
+                availableRooms.add(room);
+            }
+        }
+
+        availableRooms.sort((r1, r2) -> {
+            if (lowToHigh) {
+                return Double.compare(r1.getPricePerNight(), r2.getPricePerNight());
+            } else {
+                return Double.compare(r2.getPricePerNight(), r1.getPricePerNight());
+            }
+        });
+
+        availableRoomsModel.setRowCount(0);
+        for (Room room : availableRooms) {
+            Object[] row = {
+                room.getRoomId(),
+                room.getRoomName(),
+                room.getRoomType(),
+                String.format("%.0f VND", room.getPricePerNight())
+            };
+            availableRoomsModel.addRow(row);
         }
     }
 }

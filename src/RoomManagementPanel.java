@@ -53,20 +53,27 @@ public class RoomManagementPanel extends JPanel {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         buttonPanel.setBackground(Color.WHITE);
 
-        addButton = createStyledButton("Add Room", new Color(46, 204, 113));
-        editButton = createStyledButton("Edit Room", new Color(241, 196, 15));
-        deleteButton = createStyledButton("Delete Room", new Color(231, 76, 60));
+        addButton = createStyledButton("Add", new Color(46, 204, 113));
+        editButton = createStyledButton("Edit", new Color(241, 196, 15));
+        deleteButton = createStyledButton("Delete", new Color(231, 76, 60));
         refreshButton = createStyledButton("Refresh", new Color(52, 152, 219));
+
+        JButton sortLowToHighButton = createStyledButton("Price: Low to High", new Color(95, 106, 196));
+        JButton sortHighToLowButton = createStyledButton("Price: High to Low", new Color(142, 68, 173));
 
         addButton.addActionListener(e -> addRoom());
         editButton.addActionListener(e -> editRoom());
         deleteButton.addActionListener(e -> deleteRoom());
         refreshButton.addActionListener(e -> refreshTable());
+        sortLowToHighButton.addActionListener(e -> sortByPrice(true));
+        sortHighToLowButton.addActionListener(e -> sortByPrice(false));
 
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(refreshButton);
+        buttonPanel.add(sortLowToHighButton);
+        buttonPanel.add(sortHighToLowButton);
 
         return buttonPanel;
     }
@@ -101,7 +108,7 @@ public class RoomManagementPanel extends JPanel {
                 room.getRoomId(),
                 room.getRoomName(),
                 room.getRoomType(),
-                String.format("$%.2f", room.getPricePerNight()),
+                String.format("%.0f VND", room.getPricePerNight()),
                 room.isAvailable() ? "Available" : "Booked"
             };
             tableModel.addRow(row);
@@ -117,6 +124,14 @@ public class RoomManagementPanel extends JPanel {
             String type = dialog.getRoomType();
             double price = dialog.getPrice();
 
+            if (roomManager.isRoomNameExists(name, -1)) {
+                JOptionPane.showMessageDialog(this,
+                    "Room name already exists!",
+                    "Duplicate Name",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             String sql = "INSERT INTO rooms (room_name, room_type, price_per_night, is_available) VALUES (?, ?, ?, 1)";
             java.sql.Connection conn = DatabaseManager.getConnection();
             try (java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -126,7 +141,7 @@ public class RoomManagementPanel extends JPanel {
                 pstmt.setDouble(3, price);
                 pstmt.executeUpdate();
 
-                JOptionPane.showMessageDialog(this, "Room added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 refreshTable();
 
             } catch (java.sql.SQLException e) {
@@ -152,8 +167,8 @@ public class RoomManagementPanel extends JPanel {
 
         if (!room.isAvailable()) {
             JOptionPane.showMessageDialog(this,
-                    "Cannot edit this room!\nThis room is currently booked/rented.\nYou can only edit rooms that are available.",
-                    "Room Booked",
+                    "This room is currently used.\nYou can only edit rooms that are available.",
+                    "Room Used",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -165,6 +180,14 @@ public class RoomManagementPanel extends JPanel {
             String name = dialog.getRoomName();
             String type = dialog.getRoomType();
             double price = dialog.getPrice();
+
+            if (roomManager.isRoomNameExists(name, roomId)) {
+                JOptionPane.showMessageDialog(this,
+                    "Room name already exists!\nPlease choose a different name.",
+                    "Duplicate Name",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             String sql = "UPDATE rooms SET room_name = ?, room_type = ?, price_per_night = ? WHERE room_id = ?";
             java.sql.Connection conn = DatabaseManager.getConnection();
@@ -202,8 +225,8 @@ public class RoomManagementPanel extends JPanel {
 
         if (!room.isAvailable()) {
             JOptionPane.showMessageDialog(this,
-                    "Cannot delete this room!\nThis room is currently booked/rented.\nYou can only delete rooms that are available.",
-                    "Room Booked",
+                    "This room is currently used.\nYou can only delete rooms that are available.",
+                    "Room Used",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -221,12 +244,36 @@ public class RoomManagementPanel extends JPanel {
                 pstmt.setInt(1, roomId);
                 pstmt.executeUpdate();
 
-                JOptionPane.showMessageDialog(this, "Room deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 refreshTable();
 
             } catch (java.sql.SQLException e) {
                 JOptionPane.showMessageDialog(this, "Error deleting room: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+        }
+    }
+
+    private void sortByPrice(boolean lowToHigh) {
+        ArrayList<Room> rooms = roomManager.getRooms();
+
+        rooms.sort((r1, r2) -> {
+            if (lowToHigh) {
+                return Double.compare(r1.getPricePerNight(), r2.getPricePerNight());
+            } else {
+                return Double.compare(r2.getPricePerNight(), r1.getPricePerNight());
+            }
+        });
+
+        tableModel.setRowCount(0);
+        for (Room room : rooms) {
+            Object[] row = {
+                room.getRoomId(),
+                room.getRoomName(),
+                room.getRoomType(),
+                String.format("%.0f VND", room.getPricePerNight()),
+                room.isAvailable() ? "Available" : "Booked"
+            };
+            tableModel.addRow(row);
         }
     }
 }

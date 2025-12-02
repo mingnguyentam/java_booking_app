@@ -58,7 +58,7 @@ public class RoomDialog extends JDialog {
         gbc.gridy = 1;
         panel.add(typeComboBox, gbc);
 
-        JLabel priceLabel = new JLabel("Price/Night ($):");
+        JLabel priceLabel = new JLabel("Price/Night (VND):");
         priceLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gbc.gridx = 0;
         gbc.gridy = 2;

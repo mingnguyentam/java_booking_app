@@ -55,7 +55,7 @@ public class Room {
 
     @Override
     public String toString() {
-        return String.format("ID: %d | Name: %s | Type: %s | Price: $%.2f/night | Status: %s",
+        return String.format("ID: %d | Name: %s | Type: %s | Price: %.0f VND/night | Status: %s",
                 roomId, roomName, roomType, pricePerNight, isAvailable ? "Available" : "Booked");
     }
 }

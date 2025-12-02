@@ -48,20 +48,16 @@ public class BookingManager {
         scanner.nextLine();
 
         Room room = roomManager.findRoomById(roomId);
-        if (room == null) {
-            System.out.println("Room not found!");
-            return;
-        }
 
         if (!room.isAvailable()) {
-            System.out.println("Sorry, this room is already booked!");
+            System.out.println("Sorry, this room is already used!");
             return;
         }
 
-        System.out.print("Enter check-in date (e.g., 2024-01-01): ");
+        System.out.print("Enter checkin date: ");
         String checkIn = scanner.nextLine();
 
-        System.out.print("Enter check-out date (e.g., 2024-01-05): ");
+        System.out.print("Enter checkout date: ");
         String checkOut = scanner.nextLine();
 
         System.out.print("Enter number of nights: ");
@@ -137,7 +133,7 @@ public class BookingManager {
             }
 
             if (!hasBookings) {
-                System.out.println("You have no bookings.");
+                System.out.println("No Data Available");
             }
 
         } catch (SQLException e) {

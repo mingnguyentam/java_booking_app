@@ -9,38 +9,7 @@ import java.util.Scanner;
 public class RoomManager {
 
     public RoomManager() {
-        addSampleRooms();
-    }
-
-    private void addSampleRooms() {
-        Connection conn = DatabaseManager.getConnection();
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as count FROM rooms")) {
-
-            if (rs.next() && rs.getInt("count") == 0) {
-                addRoomToDatabase("Deluxe Suite", "Suite", 150.0);
-                addRoomToDatabase("Standard Room", "Standard", 80.0);
-                addRoomToDatabase("Executive Room", "Executive", 120.0);
-                System.out.println("Sample rooms added to database.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error checking/adding sample rooms: " + e.getMessage());
-        }
-    }
-
-    private void addRoomToDatabase(String name, String type, double price) {
-        String sql = "INSERT INTO rooms (room_name, room_type, price_per_night, is_available) VALUES (?, ?, ?, 1)";
-        Connection conn = DatabaseManager.getConnection();
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, name);
-            pstmt.setString(2, type);
-            pstmt.setDouble(3, price);
-            pstmt.executeUpdate();
-
-        } catch (SQLException e) {
-            System.err.println("Error adding room to database: " + e.getMessage());
-        }
+        // Constructor - no sample data creation
     }
 
     public void viewAllRooms() {
@@ -77,10 +46,16 @@ public class RoomManager {
         System.out.print("Enter room name: ");
         String name = scanner.nextLine();
 
-        System.out.print("Enter room type (Standard/Deluxe/Suite/Executive): ");
+        if (isRoomNameExists(name, -1)) {
+            System.out.println("\n*** ERROR: Room name already exists! ***");
+            System.out.println("Please choose a different name.");
+            return;
+        }
+
+        System.out.print("Enter room type: ");
         String type = scanner.nextLine();
 
-        System.out.print("Enter price per night: $");
+        System.out.print("Enter price per night: ");
         double price = scanner.nextDouble();
         scanner.nextLine();
 
@@ -119,8 +94,7 @@ public class RoomManager {
         }
 
         if (!room.isAvailable()) {
-            System.out.println("\n*** ERROR: Cannot edit this room! ***");
-            System.out.println("This room is currently booked/rented.");
+            System.out.println("This room is currently used.");
             System.out.println("You can only edit rooms that are available.");
             return;
         }
@@ -134,13 +108,19 @@ public class RoomManager {
             name = room.getRoomName();
         }
 
+        if (isRoomNameExists(name, roomId)) {
+            System.out.println("\n*** ERROR: Room name already exists! ***");
+            System.out.println("Please choose a different name.");
+            return;
+        }
+
         System.out.print("Enter new room type (or press Enter to keep current): ");
         String type = scanner.nextLine();
         if (type.isEmpty()) {
             type = room.getRoomType();
         }
 
-        System.out.print("Enter new price per night (or 0 to keep current): $");
+        System.out.print("Enter new price per night (or 0 to keep current): ");
         double price = scanner.nextDouble();
         scanner.nextLine();
         if (price == 0) {
@@ -161,7 +141,7 @@ public class RoomManager {
             room.setRoomType(type);
             room.setPricePerNight(price);
 
-            System.out.println("\nRoom updated successfully!");
+            System.out.println("\nUpdated successfully!");
             System.out.println(room);
 
         } catch (SQLException e) {
@@ -183,7 +163,7 @@ public class RoomManager {
 
         if (!room.isAvailable()) {
             System.out.println("\n*** ERROR: Cannot delete this room! ***");
-            System.out.println("This room is currently booked/rented.");
+            System.out.println("This room is currently used.");
             System.out.println("You can only delete rooms that are available.");
             return;
         }
@@ -257,5 +237,21 @@ public class RoomManager {
             System.err.println("Error getting rooms: " + e.getMessage());
         }
         return rooms;
+    }
+
+    public boolean isRoomNameExists(String roomName, int excludeRoomId) {
+        String sql = "SELECT COUNT(*) as count FROM rooms WHERE LOWER(room_name) = LOWER(?) AND room_id != ?";
+        Connection conn = DatabaseManager.getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, roomName.trim());
+            pstmt.setInt(2, excludeRoomId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count") > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking room name: " + e.getMessage());
+        }
+        return false;
     }
 }

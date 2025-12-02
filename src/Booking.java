@@ -75,7 +75,7 @@ public class Booking {
 
     @Override
     public String toString() {
-        return String.format("Booking ID: %d | Room ID: %d | Customer: %s | Check-in: %s | Check-out: %s | Nights: %d | Total: $%.2f",
+        return String.format("Booking ID: %d | Room ID: %d | Customer: %s | Check-in: %s | Check-out: %s | Nights: %d | Total: %.0f VND",
                 bookingId, roomId, customerName, checkInDate, checkOutDate, numberOfNights, totalPrice);
     }
 }

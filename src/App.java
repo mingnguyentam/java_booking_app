@@ -13,8 +13,11 @@ public class App {
         scanner = new Scanner(System.in);
 
         System.out.println("========================================");
-        System.out.println("   WELCOME TO ROOM BOOKING SYSTEM");
+        System.out.println("  WELCOME TO ROOM BOOKING APP  ");
         System.out.println("========================================");
+        System.out.println("This application was developed by");
+        System.out.println("1. Nguyen Minh Tam - K24DTCN627");
+        System.out.println("2. Trieu Duc Hoang - K24DTCN598");
 
         mainMenu();
         scanner.close();
@@ -41,7 +44,7 @@ public class App {
                     bookingRoomMenu();
                     break;
                 case 0:
-                    System.out.println("\nThank you for using Room Booking System. Goodbye!");
+                    System.out.println("\nThank you for using Room Booking App. Goodbye!");
                     return;
                 default:
                     System.out.println("Invalid option! Please try again.");
@@ -110,7 +113,7 @@ public class App {
                 case 0:
                     return;
                 default:
-                    System.out.println("Invalid option! Please try again.");
+                    System.out.println("Invalid");
             }
         }
     }

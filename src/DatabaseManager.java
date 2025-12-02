@@ -10,10 +10,8 @@ public class DatabaseManager {
     static {
         try {
             Class.forName("org.sqlite.JDBC");
-            System.out.println("SQLite JDBC driver loaded successfully.");
         } catch (ClassNotFoundException e) {
-            System.err.println("SQLite JDBC driver not found: " + e.getMessage());
-            System.err.println("Please ensure sqlite-jdbc.jar is in the classpath.");
+            System.err.println("SQLite JDBC not found: " + e.getMessage());
         }
     }
 
@@ -21,7 +19,6 @@ public class DatabaseManager {
         try {
             if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(DB_URL);
-                System.out.println("Database connection established.");
             }
         } catch (SQLException e) {
             System.err.println("Error connecting to database: " + e.getMessage());
@@ -55,9 +52,6 @@ public class DatabaseManager {
 
             stmt.execute(createRoomsTable);
             stmt.execute(createBookingsTable);
-
-            System.out.println("Database tables initialized successfully.");
-
         } catch (SQLException e) {
             System.err.println("Error initializing database: " + e.getMessage());
         }
@@ -67,7 +61,6 @@ public class DatabaseManager {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("Database connection closed.");
             }
         } catch (SQLException e) {
             System.err.println("Error closing database: " + e.getMessage());

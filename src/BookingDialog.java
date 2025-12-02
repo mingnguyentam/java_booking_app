@@ -1,5 +1,5 @@
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class BookingDialog extends JDialog {
     private JTextField customerNameField;
@@ -39,7 +39,7 @@ public class BookingDialog extends JDialog {
         gbc.gridwidth = 2;
         panel.add(roomInfoLabel, gbc);
 
-        JLabel priceInfoLabel = new JLabel(String.format("Price: $%.2f per night", room.getPricePerNight()));
+        JLabel priceInfoLabel = new JLabel(String.format("Price: %.0f VND per night", room.getPricePerNight()));
         priceInfoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -125,7 +125,7 @@ public class BookingDialog extends JDialog {
         gbc.gridy = 9;
         panel.add(totalLabel, gbc);
 
-        totalPriceLabel = new JLabel("$0.00");
+        totalPriceLabel = new JLabel("0 VND");
         totalPriceLabel.setFont(new Font("Arial", Font.BOLD, 16));
         totalPriceLabel.setForeground(new Color(46, 204, 113));
         gbc.gridx = 1;
@@ -141,9 +141,9 @@ public class BookingDialog extends JDialog {
         try {
             int nights = Integer.parseInt(nightsField.getText().trim());
             double total = room.getPricePerNight() * nights;
-            totalPriceLabel.setText(String.format("$%.2f", total));
+            totalPriceLabel.setText(String.format("%.0f VND", total));
         } catch (NumberFormatException e) {
-            totalPriceLabel.setText("$0.00");
+            totalPriceLabel.setText("0 VND");
         }
     }
 
@@ -189,28 +189,28 @@ public class BookingDialog extends JDialog {
 
     private boolean validateInput() {
         if (customerNameField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter customer name", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please enter name", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         if (checkInField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter check-in date", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please enter checkin date", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         if (checkOutField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter check-out date", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please enter checkout date", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         try {
             int nights = Integer.parseInt(nightsField.getText().trim());
             if (nights <= 0) {
-                JOptionPane.showMessageDialog(this, "Number of nights must be greater than 0", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Number of nights must be greater than 0", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid number of nights", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please enter a valid number of nights", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
